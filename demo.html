@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Roots Farm | Direct Supply Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --bg-base: #f9fbf9; 
+            --surface: #ffffff;
+            --primary: #133a22; /* Deep high-contrast organic green */
+            --accent: #d90429;  /* Crisp red for out-of-stock/alerts */
+            --text-dark: #1e2220;
+            --text-light: #5a6560;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        /* Fixed Navigation Minimalist Bar */
+        header {
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            background-color: var(--bg-base);
+        }
+
+        /* Utility Hero with Realistic Action Paths */
+        .hero-section {
+            max-width: 1100px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .hero-box {
+            background: linear-gradient(rgba(19, 58, 34, 0.85), rgba(19, 58, 34, 0.9)), 
+                        url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1000&q=80') center/cover;
+            border-radius: var(--radius);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--surface);
+        }
+
+        .hero-box h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-box p {
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            opacity: 0.9;
+        }
+
+        /* Buttons Built for High Tap-Target Standards */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 1.75rem;
+            background: var(--surface);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .action-btn-primary {
+            background: var(--primary);
+            color: var(--surface);
+            margin-right: 0.5rem;
+        }
+
+        /* Section Styling */
+        .container {
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .section-title-block {
+            margin-bottom: 2rem;
+        }
+
+        .section-title-block h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .section-title-block p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Fast Filter Tabs */
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-chip {
+            white-space: nowrap;
+            padding: 0.5rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-chip.active, .filter-chip:hover {
+            background: var(--primary);
+            color: var(--surface);
+            border-color: var(--primary);
+        }
+
+        /* Mobile-Friendly Grid & Product Cards */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        /* OUT OF STOCK STATE: Dims card slightly and removes vivid color profile */
+        .card.is-sold-out {
+            opacity: 0.65;
+        }
+
+        .card.is-sold-out .card-img-frame {
+            filter: grayscale(100%);
+        }
+
+        .card.is-sold-out .rate-label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            text-decoration: line-through;
+        }
+
+        .card-img-frame {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        /* Status Badges protecting against inventory updates */
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary);
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status-badge.alert {
+            background: var(--accent);
+            color: var(--surface);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-body p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .rate-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Low Friction B2B Direct Layout */
+        .wholesale-panel {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .panel-info h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .panel-info p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
+        }
+
+        .panel-info ul {
+            list-style: none;
+        }
+
+        .panel-info li {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-info i {
+            color: var(--primary);
+        }
+
+        /* Form Engine */
+        .input-block {
+            margin-bottom: 1rem;
+        }
+
+        .input-block label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-base);
+            font-size: 0.95rem;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+        }
+
+        /* Prominent Sticky WhatsApp Bar for Direct Communication */
+        .whatsapp-bar {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25D366;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .whatsapp-bar:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .wholesale-panel { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+            .hero-box { padding: 2.5rem 1rem; }
+            .hero-box h1 { font-size: 1.75rem; }
+            nav { display: none; }
+        }
+
+        footer {
+            background: var(--primary);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 2rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Simple Navigation -->
+    <header>
+        <div class="nav-wrapper">
+            <div class="logo-text"><i class="fa-solid fa-wheat-awn"></i> FreshRoots Hub</div>
+            <nav>
+                <a href="#catalog">View Catalog</a>
+                <a href="#wholesale">Wholesale Orders</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Content Showcase -->
+    <section class="hero-section">
+        <div class="hero-box">
+            <h1>Direct Farm Allocation & Inquiries</h1>
+            <p>Verify current farm cycles and secure bulk loads or store allocations instantly without unverified travel.</p>
+            <a href="#catalog" class="action-btn action-btn-primary">Check Availability</a>
+            <a href="#wholesale" class="action-btn">Wholesale Setup</a>
+        </div>
+    </section>
+
+    <!-- Dynamic Inventory Showcase -->
+    <section id="catalog" class="container">
+        <div class="section-title-block">
+            <h2>Current Harvest & Production Cycles</h2>
+            <p>Review real-time farm status before confirming transport routing or retail market supply chains.</p>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-chip active" onclick="applyFilter('all')">All Products</button>
+            <button class="filter-chip" onclick="applyFilter('field')">Field Crops</button>
+            <button class="filter-chip" onclick="applyFilter('livestock')">Poultry & Livestock</button>
+        </div>
+
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="card" data-group="field">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge">Available Now</span>
+                </div>
+                <div class="card-body">
+                    <h3>Organic Sweet Potatoes</h3>
+                    <p>Cleaned, sorted, and ready for immediate market loading from main store bins.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">From $2.20 / kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="card" data-group="livestock">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge">Fresh Daily</span>
+                </div>
+                <div class="card-body">
+                    <h3>Premium Farm Eggs</h3>
+                    <p>Sorted by size daily. Stored in temperature-controlled loading bays for collection.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">Market Rate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3 [OUT OF STOCK TEST CASE] -->
+            <div class="card is-sold-out" data-group="field">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1566385101042-1a0104524c66?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge alert">Out of Stock</span>
+                </div>
+                <div class="card-body">
+                    <h3>Crisp Morning Carrots</h3>
+                    <p>Current harvest block completely allocated. Next field pull expected in 4 days.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">Unavailable</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="card" data-group="livestock">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1527153857715-3908f2bcb5ea?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge">Available Now</span>
+                </div>
+                <div class="card-body">
+                    <h3>Raw Clover Honey</h3>
+                    <p>Pure, unpasteurized batch collections packed directly into wholesale-ready crates.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">$9.00 / jar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="card" data-group="field">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge">Available Now</span>
+                </div>
+                <div class="card-body">
+                    <h3>Leafy Spinach Bunches</h3>
+                    <p>Harvested at dawn daily to ensure maximum shelf life at retail stalls.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">From $2.80 / bunch</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 6 [OUT OF STOCK TEST CASE] -->
+            <div class="card is-sold-out" data-group="field">
+                <div class="card-img-frame" style="background-image: url('https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=400&q=80')">
+                    <span class="status-badge alert">Out of Stock</span>
+                </div>
+                <div class="card-body">
+                    <h3>Golden Sweet Corn</h3>
+                    <p>Field maturity tracking on schedule. Pre-booking slots opening up next week.</p>
+                    <div class="card-footer">
+                        <span class="rate-label">Unavailable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Low Friction Bulk Inquiry Section -->
+    <section id="wholesale" class="container">
+        <div class="wholesale-panel">
+            <div class="panel-info">
+                <h3>Store & Distributor Allocation</h3>
+                <p>Register your retail store or market stall processing route to minimize paperwork and lock down priority wholesale order limits.</p>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Tiered discounts based on consistent volume logs</li>
+                    <li><i class="fa-solid fa-check"></i> Standardized freight and logistics scheduling</li>
+                    <li><i class="fa-solid fa-check"></i> Digital commercial verification for accounts</li>
+                </ul>
+            </div>
+
+            <div>
+                <form id="orderForm" onsubmit="processForm(event)">
+                    <div class="input-block">
+                        <label for="bizName">Business or Stall Name</label>
+                        <input type="text" id="bizName" class="field-input" placeholder="e.g., Downtown Storefront" required>
+                    </div>
+                    <div class="input-block">
+                        <label for="contactInfo">Phone / WhatsApp Number</label>
+                        <input type="text" id="contactInfo" class="field-input" placeholder="e.g., +1 234 567 890" required>
+                    </div>
+                    <div class="input-block">
+                        <label for="categorySelection">Supply Lines Needed</label>
+                        <select id="categorySelection" class="field-input">
+                            <option>Bulk Field Crops / Vegetables</option>
+                            <option>Poultry / Livestock Supplies</option>
+                            <option>Mixed Weekly Store Inventory</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="action-btn action-btn-primary" style="width: 100%; justify-content: center;">Submit Routine Request</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Direct WhatsApp Order Hub Link -->
+    <a href="https://wa.me/1234567890?text=Hello%20FreshRoots%20Management,%20I'd%20like%20to%20verify%20today's%20available%20stock%20rates." class="whatsapp-bar" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>Chat with Farm Dispatch</span>
+    </a>
+
+    <footer>
+        <p>&copy; 2026 Fresh Roots Farm. Production Tracking, Verified Delivery Logistics.</p>
+    </footer>
+
+    <script>
+        // High performance minimal UI filtering mechanism
+        function applyFilter(group) {
+            const items = document.querySelectorAll('.card');
+            const chips = document.querySelectorAll('.filter-chip');
+            
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            items.forEach(item => {
+                if (group === 'all' || item.getAttribute('data-group') === group) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function processForm(event) {
+            event.preventDefault();
+            alert('Your commercial allocation request has been saved. Farm logistics management will reach out directly through the specified phone line.');
+            document.getElementById('orderForm').reset();
+        }
+    </script>
+</body>
+</html>
